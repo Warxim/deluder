@@ -13,15 +13,17 @@ class MessageInterceptor:
         self.logger = create_logger(self.get_name())
 
     @classmethod
-    def get_name(cls) -> str:
-        return cls.__class__.__name__.replace('MessageInterceptor', '')
-
-    @classmethod
     def default_config(cls) -> dict:
         """
         Default interceptor configuration, which can be overriden in config.json file
         """
         return {}
+
+    def get_name(self) -> str:
+        """
+        Obtains name of the interceptor
+        """
+        return self.__class__.__name__.replace('MessageInterceptor', '')
 
     def init(self):
         """
