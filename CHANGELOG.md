@@ -1,0 +1,11 @@
+# Changelog
+
+All notable changes to this project will be documented in this changelog file.
+
+## [1.0] - 2023-11-01
+### Added
+- WinSock, OpenSSL and SChannel libraries
+- Proxifier interceptor
+- Log interceptor
+- PETEP interceptor
+- Debug interceptor

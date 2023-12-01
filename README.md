@@ -1,4 +1,5 @@
 # Deluder
+[![Release](https://img.shields.io/github/release/Warxim/deluder?labelColor=383b53&color=737dde)](https://github.com/Warxim/petep/releases)
 [![License: GPL v3](https://img.shields.io/github/license/Warxim/petep?labelColor=383b53&color=98a0e3)](https://www.gnu.org/licenses/gpl-3.0)
 ![python: 3.9](https://img.shields.io/badge/python-3.9-0?labelColor=383b53&color=737dde)
 
