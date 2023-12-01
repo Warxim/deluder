@@ -1,0 +1,3 @@
+frida
+psutil
+argparse

@@ -1,0 +1,8 @@
+petep/**
+manual_test/**
+**/__pycache__/**
+build/**
+dist/**
+deluder.egg-info/**
+script1.js
+config.json
