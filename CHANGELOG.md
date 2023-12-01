@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this changelog file.
 
-## [1.0] - 2023-11-01
+## [1.0] - 2023-12-01
 ### Added
 - WinSock, OpenSSL and SChannel libraries
 - Proxifier interceptor
