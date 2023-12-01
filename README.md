@@ -1,12 +1,12 @@
 # Deluder
-[![Release](https://img.shields.io/github/release/Warxim/deluder?labelColor=383b53&color=737dde)](https://github.com/Warxim/petep/releases)
+[![Release](https://img.shields.io/github/release/Warxim/deluder?labelColor=383b53&color=737dde)](https://github.com/Warxim/deluder/releases)
 [![License: GPL v3](https://img.shields.io/github/license/Warxim/petep?labelColor=383b53&color=98a0e3)](https://www.gnu.org/licenses/gpl-3.0)
 ![python: 3.9](https://img.shields.io/badge/python-3.9-0?labelColor=383b53&color=737dde)
 
 Deluder is a tool for intercepting traffic of proxy unaware applications. 
 It is based on [Frida](https://frida.re/) and uses dynamic instrumentation to intercept communication in common networking libraries. 
 
-Deluder was primarily designed to work with [PETEP](https://github.com/Warxim/petep), 
+Deluder was primarily designed to work with [PETEP (PEnetration TEsting Proxy)](https://github.com/Warxim/petep), 
 but can also be used as a standalone utility for traffic interception.
 
 ## Networking Libraries
