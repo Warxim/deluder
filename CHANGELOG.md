@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this changelog file.
 
-## [Unreleased]
+## [1.1] - 2024-12-31
 ### Added
 - Support for remote Frida server
 
