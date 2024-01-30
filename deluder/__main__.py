@@ -68,7 +68,7 @@ def main():
     )
 
     parser.add_argument('--version', '-v', version=f'Deluder v{Deluder.version()}', action='version')
-    
+
     # Create command parsers
     commands = parser.add_subparsers(dest='command', metavar='<command>')
 
