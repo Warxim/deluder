@@ -92,6 +92,13 @@ deluder attach -c config.json 12501
 deluder attach -i petep 12501
 deluder attach -s schannel,openssl -i log 12000
 deluder attach -c config.json "Application.exe"
+
+# Attach to existing process in a remote host (10.0.0.1 on port 12345) 
+deluder -H 10.0.0.1:12345 attach -c config.json 12501
+deluder -H 10.0.0.1:12345 attach -i petep 12501 -H 10.0.0.1
+deluder -H 10.0.0.1:12345 attach -s schannel,openssl -i log 12000
+deluder -H 10.0.0.1:12345 attach -c config.json "Application.exe"
+
 ```
 
 Both attach and run have the following parameters:
