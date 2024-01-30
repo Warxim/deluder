@@ -25,12 +25,12 @@ class Deluder:
     script: str
     executor: ThreadPoolExecutor
     interceptors: List[MessageInterceptor]
-    host: str
+    device: frida.core.Device
     
-    def __init__(self, processes: Set[Process], managed: bool, config: Optional[DeluderConfig]=None, host: Optional[DeluderConfig]=""):
+    def __init__(self, processes: Set[Process], managed: bool, device: frida.core.Device, config: Optional[DeluderConfig]=None):
         self.managed = managed
+        self.device = device
         self.config = config if config is not None else create_default_config()
-        self.host = host if host is not None else ""
         self.processes = processes
 
     @classmethod
@@ -38,40 +38,50 @@ class Deluder:
         return VERSION
 
     @classmethod
-    def for_new_app(cls, app_path: Union[str, List[str]], config: Optional[DeluderConfig]) -> 'Deluder':
+    def for_new_app(cls, app_path: Union[str, List[str]], remote_host: Optional[str], config: Optional[DeluderConfig]) -> 'Deluder':
         """
         Creates Deluder core for starting new application
         """
         logger.info(f'Starting process for application "{app_path}"...')
-        pid = frida.spawn(app_path)
+        device = cls._create_device(remote_host)
+        pid = device.spawn(app_path)
         logger.info(f'Process started with PID "{pid}".')
         process = Process(pid=pid)
         logger.info(f'Created deluder for existing process with PID {pid}.')
-        return Deluder(processes={process}, managed=True, config=config)
+        return Deluder(processes={process}, managed=True, device=device, config=config)
 
     @classmethod
-    def for_existing_process_id(cls, pid: int, config: DeluderConfig, host: str) -> 'Deluder':
+    def for_existing_process_id(cls, pid: int, remote_host: Optional[str], config: DeluderConfig) -> 'Deluder':
         """
         Creates Deluder core for already running application identified by PID
         """
         logger.info(f'Attaching deluder to process with PID {pid}...')
+        device = cls._create_device(remote_host)
         process = Process(pid=pid)
         logger.info(f'Created deluder for existing process with PID {pid}...')
-        return Deluder(processes={process}, managed=False, config=config, host=host)
+        return Deluder(processes={process}, managed=False, device=device, config=config)
 
     @classmethod
-    def for_existing_process_name(cls, process_name: str, config: DeluderConfig, host: str) -> 'Deluder':
+    def for_existing_process_name(cls, process_name: str, remote_host: Optional[str], config: DeluderConfig) -> 'Deluder':
         """
         Creates Deluder core for already running application identified by process name
         """
         logger.info(f'Attaching deluder to process "{process_name}"...')
-        if not host:
-            pid = frida.get_local_device().get_process(process_name).pid  
-        else:
-            frida.get_device_manager().add_remote_device(host).get_process(process_name).pid
+        device = cls._create_device(remote_host)
+        pid = device.get_process(process_name).pid
         process = Process(pid=pid)
         logger.info(f'Created deluder for existing process "{process_name}" with PID {pid}...')
-        return Deluder(processes={process}, managed=False, config=config, host=host)
+        return Deluder(processes={process}, managed=False, device=device, config=config)
+    
+    @classmethod
+    def _create_device(cls, remote_host: Optional[str]) -> frida.core.Device:
+        """
+        Creates Frida device (remote or local)
+        """
+        if not remote_host:
+            return frida.get_local_device()
+        else:
+            return frida.get_device_manager().add_remote_device(remote_host)
 
     def delude(self):
         """
@@ -84,7 +94,6 @@ class Deluder:
 
             self.executor = ThreadPoolExecutor(max_workers=1)
 
-            self._init_device()
             self._init_interceptors()
             self._init_child_gating()
             self._init_scripts()
@@ -107,9 +116,6 @@ class Deluder:
 
             self.executor.shutdown()
         logger.info('Deluder finished.')
-
-    def _init_device(self):
-        self.device = frida.get_local_device() if not self.host else frida.get_device_manager().add_remote_device(self.host)
 
     def _resume_process(self, process: Process):
         try:

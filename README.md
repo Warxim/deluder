@@ -93,12 +93,16 @@ deluder attach -i petep 12501
 deluder attach -s schannel,openssl -i log 12000
 deluder attach -c config.json "Application.exe"
 
-# Attach to existing process in a remote host (10.0.0.1 on port 12345) 
-deluder -H 10.0.0.1:12345 attach -c config.json 12501
-deluder -H 10.0.0.1:12345 attach -i petep 12501 -H 10.0.0.1
-deluder -H 10.0.0.1:12345 attach -s schannel,openssl -i log 12000
-deluder -H 10.0.0.1:12345 attach -c config.json "Application.exe"
+# Run process and attach to it in a remote host (10.0.0.1 on port 27042) 
+deluder run -r 10.0.0.1:27042 -c config.json "C:/Application.exe"
+deluder run -r 10.0.0.1:27042 -i petep "C:/Application.exe"
+deluder run --remote 10.0.0.1:27042 --debug --interceptors log,proxifier,log --scripts schannel,openssl "C:/Application.exe"
 
+# Attach to existing process in a remote host (10.0.0.1 on port 27042) 
+deluder attach -r 10.0.0.1:27042 -c config.json 12501
+deluder attach -r 10.0.0.1:27042 -i petep 12501
+deluder attach -r 10.0.0.1:27042 -s schannel,openssl -i log 12000
+deluder attach -r 10.0.0.1:27042 -c config.json "Application.exe"
 ```
 
 Both attach and run have the following parameters:
@@ -106,6 +110,7 @@ Both attach and run have the following parameters:
 - **-d/--debug** - Enables debug with verbose output
 - **-i/--interceptors [proxifier,log,log]** - Enables given interceptors
 - **-s/--scripts [winsock,openssl]** - Enables given scripts (networking libraries)
+- **-r/--remote [ip:port]** - Uses remote frida-server host
 - **--ignore-child-processes** - Disables automatic child process hooking
 
 #### Recommended Usage
@@ -210,6 +215,21 @@ Each interceptor module has important methods:
 
 The most important method for you will be the `intercept` method, in which you 
 can process the traffic. The message parameter is mutable and you can modify the data inside.
+
+## Remote Host 
+In order to intercept network communication of applications on remote hosts, on which you cannot run the deluder and PETEP itself, 
+you can use Frida server, to which you can connect from Deluder.
+
+See [Frida Releases](https://github.com/frida/frida/releases) and download frida-server for your platform. Once you run the frida-server, you can use Deluder's `-r` parameter to execute the attach/run commands on the remote machine. 
+
+For example, on remote machine, you can run:
+```shell
+frida-server -l 0.0.0.0:27042
+```
+and then run the following on your local machine:
+```shell
+deluder run -r REMOTE_IP:27042 -i log "C:/Application.exe"
+```
 
 ## Script Modules
 
