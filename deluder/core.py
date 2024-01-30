@@ -25,10 +25,12 @@ class Deluder:
     script: str
     executor: ThreadPoolExecutor
     interceptors: List[MessageInterceptor]
+    host: str
     
-    def __init__(self, processes: Set[Process], managed: bool, config: Optional[DeluderConfig]=None):
+    def __init__(self, processes: Set[Process], managed: bool, config: Optional[DeluderConfig]=None, host: Optional[DeluderConfig]=""):
         self.managed = managed
         self.config = config if config is not None else create_default_config()
+        self.host = host if host is not None else ""
         self.processes = processes
 
     @classmethod
@@ -48,25 +50,28 @@ class Deluder:
         return Deluder(processes={process}, managed=True, config=config)
 
     @classmethod
-    def for_existing_process_id(cls, pid: int, config: DeluderConfig) -> 'Deluder':
+    def for_existing_process_id(cls, pid: int, config: DeluderConfig, host: str) -> 'Deluder':
         """
         Creates Deluder core for already running application identified by PID
         """
         logger.info(f'Attaching deluder to process with PID {pid}...')
         process = Process(pid=pid)
         logger.info(f'Created deluder for existing process with PID {pid}...')
-        return Deluder(processes={process}, managed=False, config=config)
+        return Deluder(processes={process}, managed=False, config=config, host=host)
 
     @classmethod
-    def for_existing_process_name(cls, process_name: str, config: DeluderConfig) -> 'Deluder':
+    def for_existing_process_name(cls, process_name: str, config: DeluderConfig, host: str) -> 'Deluder':
         """
         Creates Deluder core for already running application identified by process name
         """
         logger.info(f'Attaching deluder to process "{process_name}"...')
-        pid = frida.get_local_device().get_process(process_name).pid
+        if not host:
+            pid = frida.get_local_device().get_process(process_name).pid  
+        else:
+            frida.get_device_manager().add_remote_device(host).get_process(process_name).pid
         process = Process(pid=pid)
         logger.info(f'Created deluder for existing process "{process_name}" with PID {pid}...')
-        return Deluder(processes={process}, managed=False, config=config)
+        return Deluder(processes={process}, managed=False, config=config, host=host)
 
     def delude(self):
         """
@@ -104,7 +109,7 @@ class Deluder:
         logger.info('Deluder finished.')
 
     def _init_device(self):
-        self.device = frida.get_local_device()
+        self.device = frida.get_local_device() if not self.host else frida.get_device_manager().add_remote_device(self.host)
 
     def _resume_process(self, process: Process):
         try:

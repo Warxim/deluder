@@ -15,6 +15,7 @@ def main():
     """
     config = create_default_config()
 
+    host = ""
 
     def command_config():
         example_config = {
@@ -67,6 +68,9 @@ def main():
 
     parser.add_argument('--version', '-v', version=f'Deluder v{Deluder.version()}', action='version')
 
+    parser.add_argument('--host', '-H', metavar='<host:port>',
+                            help=f'Connect to an existing process in a remote host running frida-server')
+    
     # Create command parsers
     commands = parser.add_subparsers(dest='command', metavar='<command>')
 
@@ -133,14 +137,17 @@ def main():
     if args.ignore_child_processes:
         config.ignore_child_processes = True
 
+    if args.host:
+        host = args.host
+
     # Create deluder
     if args.command == 'run':
         deluder = Deluder.for_new_app(app_path=args.path, config=config)
     elif args.command == 'attach':
         if str.isdigit(args.pid_or_name):
-            deluder = Deluder.for_existing_process_id(int(args.pid_or_name), config=config)
+            deluder = Deluder.for_existing_process_id(int(args.pid_or_name), config=config, host=host)
         else:
-            deluder = Deluder.for_existing_process_name(args.pid_or_name, config=config)
+            deluder = Deluder.for_existing_process_name(args.pid_or_name, config=config, host=host)
 
     # Run deluder
     deluder.delude()
