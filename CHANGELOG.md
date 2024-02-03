@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this changelog file.
 
-## [1.1] - 2024-12-31
+## [1.2] - 2024-02-03
+### Added
+- Support for GnuTLS and Linux sockets (libc.so)
+
+## [1.1] - 2024-01-30
 ### Added
 - Support for remote Frida server
 
