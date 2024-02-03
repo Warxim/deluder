@@ -1,4 +1,4 @@
-const LIBS = ["libssl", "openssl", "ssleay", "libeay"];
+const LIBS = module.config.libs || ["libssl", "openssl", "ssleay", "libeay", "libcrypto"];
 
 const getFdFunctions = new Map();
 

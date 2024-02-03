@@ -138,7 +138,9 @@ def create_default_config() -> DeluderConfig:
         ignore_child_processes=False,
         scripts=[
             DeluderScriptConfig('winsock'),
+            DeluderScriptConfig('libc'),
             DeluderScriptConfig('openssl'),
+            DeluderScriptConfig('gnutls'),
             DeluderScriptConfig('schannel'),
         ],
         interceptors=[

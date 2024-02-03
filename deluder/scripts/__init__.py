@@ -23,6 +23,7 @@ Contains all available scripts, which can be loaded to Deluder
 
 SCRIPTS_DEFAULT_CONFIGS = {
     'winsock': {
+        'libs': ["ws2_32.dll", "wsock32.dll"],
         'send': True,
         'sendto': True,
         'recv': True,
@@ -34,14 +35,31 @@ SCRIPTS_DEFAULT_CONFIGS = {
         'shutdown': True,
         'closesocket': True,
     },
+    'libc': {
+        'libs': ["libc.so"],
+        'send': True,
+        'sendto': True,
+        'recv': True,
+        'recvfrom': True,
+        'shutdown': True,
+        'close': True,
+    },
     'openssl': {
+        'libs': ["libssl", "openssl", "ssleay", "libeay", "libcrypto"],
         'SSL_write': True,
         'SSL_write_ex': True,
         'SSL_read': True,
         'SSL_read_ex': True,
         'SSL_shutdown': True,
     },
+    'gnutls': {
+        'libs': ["gnutls"],
+        'gnutls_record_send': True,
+        'gnutls_record_recv': True,
+        'gnutls_bye': True,
+    },
     'schannel': {
+        'libs': ["Secur32.dll"],
         'EncryptMessage': True,
         'DecryptMessage': True,
     }

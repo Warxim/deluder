@@ -4,17 +4,17 @@
 ![python: 3.9](https://img.shields.io/badge/python-3.9-0?labelColor=383b53&color=737dde)
 
 Deluder is a tool for intercepting traffic of proxy unaware applications. 
-It is based on [Frida](https://frida.re/) and uses dynamic instrumentation to intercept communication in common networking libraries. 
+It is based on [Frida](https://frida.re/) and uses dynamic instrumentation to intercept communication in common networking libraries on multiple platforms. 
 
 Deluder was primarily designed to work with [PETEP (PEnetration TEsting Proxy)](https://github.com/Warxim/petep), 
 but can also be used as a standalone utility for traffic interception.
 
 ## Networking Libraries
 Since Deluder is based on dynamic instrumentation, there is a need for custom scripts
-for each networking library (e.g. Winsock, OpenSSL).
+for each networking library (e.g. Winsock, OpenSSL, GnuTLS).
 
 Currently, Deluder support the following libraries out of the box:
-- WinSock (ws2_32.dll)
+- WinSock (ws2_32.dll, wsock32.dll)
   - send
   - sendto
   - recv
@@ -23,11 +23,19 @@ Currently, Deluder support the following libraries out of the box:
   - WSA_SendTo
   - WSA_Recv
   - WSA_RecvFrom
-- OpenSSL (libssl.dll, ssleay.dll)
+- Linux sockets (libc.so)
+  - send
+  - sendto
+  - recv
+  - recvfrom
+- OpenSSL (libssl.dll, ssleay.dll, libssl.dylib)
   - SSL_write
   - SSL_write_ex
   - SSL_read
   - SSL_read_ex
+- GnuTLS (libgnutls.so, libgnutls.dll, libgnutls.dylib)
+  - gnutls_record_send
+  - gnutls_record_recv
 - SChannel (Secur32.dll)
   - EncryptMessage
   - DecryptMessage
@@ -54,7 +62,7 @@ Deluder is a built on Python and gives you two options, how to use it:
        ```shell
        deluder --help
        ```
-2. Install requirements and use it in development mode (supports adding new interceptors and scripts)
+2. Install requirements and use it in development mode (supports adding new interceptors and scripts without the need for reinstalling)
    - [Download latest Deluder release](https://github.com/Warxim/deluder/releases/latest)
       or clone the repo `git clone https://github.com/Warxim/deluder.git`
    - In downloaded deluder directory, run installation of requirements
@@ -126,8 +134,8 @@ and then configure the deluder through the config.json:
 - setup scripts
   - If you are testing an application, you should only enable scripts for used libraries.
   - If you do not know, which scripts to use, usually it is good to start first with
-    the SSL/TLS libraries (openssl, schannel) and if these are not capturing anything, 
-    try to use socket libraries (winsock). 
+    the SSL/TLS libraries (openssl, schannel, gnutls) and if these are not capturing anything, 
+    try to use socket libraries (winsock, libc). 
 
 and then run the deluder through attach or run commands:
 ```shell
@@ -139,6 +147,8 @@ deluder attach -c config.json "Application.exe"
 ## PETEP
 In order to use Deluder with graphical interface, you can use [PETEP (PEnetration TEsting Proxy)](https://github.com/Warxim/petep),
 which supports integration with Deluder and allows you to conveniently work with the intercepted data.
+
+![PETEP](https://petep.warxim.com/img/social/deluder.png)
 
 In PETEP you can simply add Deluder proxy or use Deluder preset, which already has Deluder proxy configured. After that you can run Deluder using the following commands:
 
@@ -168,7 +178,7 @@ Example minimal config for Deluder and PETEP integration:
     ],
     "scripts": [
         {
-            "type": "schannel",
+            "type": "winsock",
             "config": {}
         },
         {
@@ -176,7 +186,15 @@ Example minimal config for Deluder and PETEP integration:
             "config": {}
         },
         {
-            "type": "winsock",
+            "type": "gnutls",
+            "config": {}
+        },
+        {
+            "type": "libc",
+            "config": {}
+        },
+        {
+            "type": "schannel",
             "config": {}
         }
     ]
@@ -251,9 +269,10 @@ Each module has two own variables:
 - `module.config` - module config provided in Deluder config file
 
 ## Deluder vs EchoMirage
-Deluder uses similar approach known from EchoMirage to intercept the traffic of applications.
-Currently Deluder supports approximatelly the same libraries as EchoMirage, but it is possible 
-to extend Deluder with more protocols and support for other platforms (Linux, Mac).
+Deluder uses similar approach known from EchoMirage to intercept the traffic of applications, 
+but thanks to Frida library, it also supports other platforms than Windows.
+Currently Deluder supports a few extra libraries in comparison to EchoMirage and it is possible 
+to extend Deluder with more protocols for multiple platforms (like Windows, Linux, Mac).
 
 ## License
 Deluder is licensed under GNU GPL 3.0.

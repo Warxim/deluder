@@ -1,4 +1,4 @@
-const LIBS = ["Secur32.dll"];
+const LIBS = module.config.libs || ["Secur32.dll"];
 
 const BufferType = {
     DATA: 1,

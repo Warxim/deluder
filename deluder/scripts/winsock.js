@@ -1,4 +1,4 @@
-const LIBS = ["ws2_32.dll", "wsock32.dll"];
+const LIBS = module.config.libs || ["ws2_32.dll", "wsock32.dll"];
 
 //
 // Basic Winsock API
