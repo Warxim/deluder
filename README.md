@@ -9,6 +9,8 @@ It is based on [Frida](https://frida.re/) and uses dynamic instrumentation to in
 Deluder was primarily designed to work with [PETEP (PEnetration TEsting Proxy)](https://github.com/Warxim/petep), 
 but can also be used as a standalone utility for traffic interception.
 
+Video: [Youtube Deluder & PETEP](https://www.youtube.com/watch?v=mDcOBM8cu2g)
+
 ## Networking Libraries
 Since Deluder is based on dynamic instrumentation, there is a need for custom scripts
 for each networking library (e.g. Winsock, OpenSSL, GnuTLS).
