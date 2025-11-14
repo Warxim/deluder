@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this changelog file.
 
+## [Unreleased]
+### Fixed
+- Fixed hex dump for invisible characters
+
 ## [1.2] - 2024-02-03
 ### Added
 - Support for GnuTLS and Linux sockets (libc.so)
