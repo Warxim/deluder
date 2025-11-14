@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this changelog file.
 
-## [Unreleased]
+## [1.2.1] - 2025-11-14
 ### Fixed
 - Fixed hex dump for invisible characters
 

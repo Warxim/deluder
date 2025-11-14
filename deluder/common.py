@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 
 
-VERSION = "1.2"
+VERSION = "1.2.1"
 
 
 @dataclass
