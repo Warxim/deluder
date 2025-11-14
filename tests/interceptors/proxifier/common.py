@@ -1,22 +1,14 @@
 import socket
 
+from tests.utils import generate_all_bytes
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 
 from deluder.utils import try_close
 
 
-def _generate_all_bytes() -> bytes:
-    byte_array = []
-    byte = 0x00
-    while byte != 0xFF:
-        byte_array.append(byte)
-        byte += 0x01
-    byte_array.append(byte)
-    return bytes(byte_array)
-
-TEST_DATA_INPUT = ['te[replace]st'.encode(), _generate_all_bytes(), '[replace]warxim[replace]'.encode()]
-TEST_DATA_OUTPUT = ['te[value]st'.encode(), _generate_all_bytes(), '[value]warxim[value]'.encode()]
+TEST_DATA_INPUT = ['te[replace]st'.encode(), generate_all_bytes(), '[replace]warxim[replace]'.encode()]
+TEST_DATA_OUTPUT = ['te[value]st'.encode(), generate_all_bytes(), '[value]warxim[value]'.encode()]
 
 
 class SimpleProxy(Thread):
