@@ -35,7 +35,6 @@ def format_bytes(data: bytes) -> str:
     """
     Formats given bytes to human readable format (hex table)
     """
-    data = _replace_invisible_chars(data)
 
     text = ''
     line = '        '
@@ -51,7 +50,7 @@ def format_bytes(data: bytes) -> str:
         line += ' ' * 2
         line += _add_padding_to_line(' '.join('{:02x}'.format(x) for x in part), 47)
         line += ' ' * 2
-        line += bytes(part).decode('latin1')
+        line += bytes(_replace_invisible_chars(part)).decode('latin1')
         text += line + '\n'
         part_index += 16
 
